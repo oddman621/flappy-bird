@@ -1,5 +1,3 @@
-(import jaylib)
-
 (defn random-y [rand-range]
   (let [min-val (- 300 (/ rand-range 2))]
     (+ min-val (* (math/random) rand-range))))
@@ -36,6 +34,3 @@
         y (+ (pipe :space-y) (/ (pipe :space) 2))]
   		[(math/trunc x) (math/trunc y) (pipe :width) collision-height]))
 
-(defn draw-pipe [pipe]
-  (jaylib/draw-rectangle ;(collision-rect-upper pipe) :orange)
-  (jaylib/draw-rectangle ;(collision-rect-lower pipe) :orange))

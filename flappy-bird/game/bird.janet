@@ -1,11 +1,3 @@
-(import jaylib)
-
-(defn draw-bird [bird]
-  (let [x (get bird :x)
-        y (get bird :y)
-        rad (get bird :radius)]
-    (jaylib/draw-circle x (math/trunc y) rad :yellow)))
-
 (defn make-bird [] 
   @{:x 100
     :y 300
