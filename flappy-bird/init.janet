@@ -1,30 +1,33 @@
-(use jaylib)
+(import jaylib)
+(import ./game/session :as session :only [make-session update-session draw-session])
+(import ./game/storage :as storage)
 
-(defn main
-  [& args]
-  (init-window 100 100 "Test Game")
-  (set-target-fps 60)
-  (hide-cursor)
+# -------- helper --------
+(defn init-window []
+  (jaylib/init-window 400 600 "Janet Flappy Bird")
+  (jaylib/set-target-fps 60)
+  # (jaylib/set-exit-key 0)
+  (jaylib/hide-cursor))
+(defn deinit-window [] (jaylib/close-window))
 
-  (while (not (window-should-close))
-    (begin-drawing)
+# -------- main --------
+(defn main [& args]
+  (init-window)
 
-    (clear-background [0 0 0])
-    (let [[x y] (get-mouse-position)]
-      (draw-circle-gradient (math/floor x) (math/floor y) 31.4 :lime :red)
-      (draw-poly [500 200] 5 40 0 :magenta)
-      (draw-line-bezier
-       [(- x 100) y]
-       [(+ x 100) (+ y 50)]
-       4 :pink)
-      (draw-line-ex
-       [x (- y 10)]
-       [x (+ y 10)]
-       4 :sky-blue)
-      (draw-line-strip
-       [[x 0] [x 100] [50 y] [10 180]]
-       :ray-white))
+  (def game-session (session/make-session))
+  (put game-session :hiscore (storage/load-hiscore))
+  (def bg-color [(/ 96 255) (/ 128 255) (/ 192 255)])
+  (while (not (jaylib/window-should-close))
 
-    (end-drawing))
+    (let [jump (jaylib/key-pressed? :space)
+          pause (jaylib/key-pressed? :enter)
+          delta (jaylib/get-frame-time)]
+      (session/update-session game-session delta jump pause))
 
-  (close-window))
+    (jaylib/begin-drawing)
+    (jaylib/clear-background bg-color)
+    (session/draw-session game-session)
+    (jaylib/end-drawing))
+
+  (deinit-window))
+
