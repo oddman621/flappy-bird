@@ -1,0 +1,16 @@
+{:type :sprite
+ :filename "fanzon.png"
+ :width 32
+ :height 16
+ :frame-width 16
+ :frame-height 16
+ :column 2
+ :row 1
+ :animations
+ {:flying
+  [{:dur 0.25
+    :pos [0 0]
+    :rect [0 0 16 16]}
+   {:dur 0.25
+    :pos [1 0]
+   	:rect [16 0 16 16]}]}}

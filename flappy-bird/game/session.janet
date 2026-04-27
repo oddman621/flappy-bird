@@ -1,7 +1,7 @@
-(import ./bird :prefix "" :only [make-bird])
+(import ./component)
 
 (defn make-session []
-  @{:bird (make-bird)
+  @{:bird (component/make-bird) # make-bird에 매개변수를 받아 외부로부터 설정이 주입되는 일관성이 필요할듯
     :gravity 0.5
 
     :pipes @[]

@@ -1,11 +1,4 @@
-(defn make-bird [] 
-  @{:x 100
-    :y 300
-    :radius 15
-    :jump-impulse 10
-    :velocity-x 2
-    :velocity-y 0
-    :state :alive})
+# bird system utils
 
 (defn reset-bird [bird]
   (put bird :x 100)

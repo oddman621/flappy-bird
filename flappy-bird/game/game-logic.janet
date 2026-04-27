@@ -4,6 +4,7 @@
 (import ./bird :prefix "" :only [bird-behaviors])
 (import ./storage)
 (import ./session)
+(import ./component)
 
 (defn bird-collided? [session]
   (let [bird (session :bird)
@@ -46,7 +47,8 @@
       (do
         (util/execute-behavior bird bird-behaviors jump-pressed (session :gravity))
         (when (= (get bird :state) :alive)
-          (do
+          (do 
+            (component/animator/update (bird :animator) delta-time)
             (pipe-process session (bird :velocity-x) delta-time)
             (update-score session)
             (when (bird-collided? session)
@@ -82,3 +84,4 @@
 
 (defn jump-pressed? [] (jaylib/key-pressed? :space))
 (defn pause-pressed? [] (jaylib/key-pressed? :enter))
+

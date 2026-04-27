@@ -1,14 +1,28 @@
 (import jaylib)
 (import ./pipe :prefix "" :only [collision-rect-upper collision-rect-lower])
 (import ./util)
+(import ./asset)
+
+# ------ helper ------
+(defn draw-texture [texture source destination]
+  (jaylib/draw-texture-pro texture source destination [0 0] 0 :white))
 
 # ------ Game Objects ------
 
-(defn draw-bird [bird]
+
+(defn draw-bird [bird frame]
   (let [x (get bird :x)
         y (get bird :y)
-        rad (get bird :radius)]
-    (jaylib/draw-circle x (math/trunc y) rad :yellow)))
+        rad (get bird :radius)
+        texture (asset/texture :fanzon)
+        #sprite (asset/sprite :fanzon :flying frame)
+        #src-rect (sprite :rect)
+        src-rect (get-in bird [:animator :rect])
+        dst-width (* rad 2 2)
+        dst-height (* rad 2 2)
+        dst-x (- x (/ dst-width 2))
+        dst-y (- y (/ dst-height 2))]
+    (draw-texture texture src-rect [dst-x dst-y dst-width dst-height])))
 
 (defn draw-pipe [pipe]
   (jaylib/draw-rectangle ;(collision-rect-upper pipe) :orange)
@@ -33,17 +47,17 @@
 (def render-behaviors
   {:main
    (fn [session]
-     (draw-bird (get session :bird))
+     (draw-bird (get session :bird) 0)
    	 (draw-main-ui))
    :playing
    (fn [session]
      (each pipe (session :pipes) (draw-pipe pipe))
-     (draw-bird (get session :bird))
+     (draw-bird (get session :bird) 0)
    	 (draw-playing-ui session))
    :gameover
    (fn [session]
      (each pipe (session :pipes) (draw-pipe pipe))
-     (draw-bird (get session :bird))
+     (draw-bird (get session :bird) 0)
    	 (draw-gameover-ui session))})
 
 (defn draw-session [session]

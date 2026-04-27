@@ -1,8 +1,9 @@
 (import jaylib) # Windowing
-(import ./game/render :as render)
+(import ./game/render :as render :only [draw-session])
 (import ./game/session :as session :only [make-session])
-(import ./game/storage :as storage)
+(import ./game/storage :as storage :only [load-hiscore])
 (import ./game/game-logic :as logic)
+(import ./game/asset :as asset)
 
 # -------- windowing + etc --------
 (defn init-window []
@@ -16,8 +17,11 @@
 # -------- main --------
 (defn main [& args]
   (init-window)
+  (asset/init-store)
   (defer
-    (deinit-window)
+    (do
+      (asset/deinit-store)
+      (deinit-window))
     (let [game-session (session/make-session)]
       (put game-session :hiscore (storage/load-hiscore))
       (while (not (jaylib/window-should-close))
