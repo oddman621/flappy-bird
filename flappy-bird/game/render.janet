@@ -4,19 +4,17 @@
 (import ./asset)
 
 # ------ helper ------
+
 (defn draw-texture [texture source destination]
   (jaylib/draw-texture-pro texture source destination [0 0] 0 :white))
 
 # ------ Game Objects ------
 
-
-(defn draw-bird [bird frame]
+(defn draw-bird [bird]
   (let [x (get bird :x)
         y (get bird :y)
         rad (get bird :radius)
         texture (asset/texture :fanzon)
-        #sprite (asset/sprite :fanzon :flying frame)
-        #src-rect (sprite :rect)
         src-rect (get-in bird [:animator :rect])
         dst-width (* rad 2 2)
         dst-height (* rad 2 2)
@@ -24,9 +22,34 @@
         dst-y (- y (/ dst-height 2))]
     (draw-texture texture src-rect [dst-x dst-y dst-width dst-height])))
 
-(defn draw-pipe [pipe]
-  (jaylib/draw-rectangle ;(collision-rect-upper pipe) :orange)
-  (jaylib/draw-rectangle ;(collision-rect-lower pipe) :orange))
+(defn draw-upper-pipe [tex col-rect hgt]
+  (let [x (+ (col-rect 0) (col-rect 2) -32)
+        y (+ (col-rect 1) (col-rect 3) -16)
+        dst-rect @[x y 32 16]]
+    (let [head-src-rect [0 0 32 -16]]
+      (draw-texture tex head-src-rect dst-rect))
+    (let [body-src-rect [0 16 32 -16]]
+      (repeat (- hgt 1)
+        (-= (dst-rect 1) 16)
+        (draw-texture tex body-src-rect dst-rect)))))
+
+(defn draw-lower-pipe [tex col-rect hgt]
+  (let [x (col-rect 0)
+        y (col-rect 1)
+        dst-rect @[x y 32 16]]
+    (let [head-src-rect [0 0 32 16]]
+      (draw-texture tex head-src-rect dst-rect))
+    (let [body-src-rect [0 16 32 16]]
+      (repeat (- hgt 1)
+        (+= (dst-rect 1) 16)
+        (draw-texture tex body-src-rect dst-rect)))))
+
+(defn draw-pipe [pipe] 
+  #(jaylib/draw-rectangle ;(collision-rect-upper pipe) :orange)
+  #(jaylib/draw-rectangle ;(collision-rect-lower pipe) :orange)
+  (draw-upper-pipe (asset/texture :pipe) (collision-rect-upper pipe) 30)
+  (draw-lower-pipe (asset/texture :pipe) (collision-rect-lower pipe) 30)
+)
 
 # ------ UI -------
 
@@ -47,18 +70,18 @@
 (def render-behaviors
   {:main
    (fn [session]
-     (draw-bird (get session :bird) 0)
-   	 (draw-main-ui))
+     (draw-bird (get session :bird))
+      (draw-main-ui))
    :playing
    (fn [session]
      (each pipe (session :pipes) (draw-pipe pipe))
-     (draw-bird (get session :bird) 0)
-   	 (draw-playing-ui session))
+     (draw-bird (get session :bird))
+      (draw-playing-ui session))
    :gameover
    (fn [session]
      (each pipe (session :pipes) (draw-pipe pipe))
-     (draw-bird (get session :bird) 0)
-   	 (draw-gameover-ui session))})
+     (draw-bird (get session :bird))
+      (draw-gameover-ui session))})
 
 (defn draw-session [session]
   (util/execute-behavior session render-behaviors))
