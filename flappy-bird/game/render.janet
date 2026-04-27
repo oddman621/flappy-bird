@@ -44,12 +44,11 @@
         (+= (dst-rect 1) 16)
         (draw-texture tex body-src-rect dst-rect)))))
 
-(defn draw-pipe [pipe] 
+(defn draw-pipe [pipe]
   #(jaylib/draw-rectangle ;(collision-rect-upper pipe) :orange)
-  #(jaylib/draw-rectangle ;(collision-rect-lower pipe) :orange)
+  #(jaylib/draw-rectangle ;(collision-rect-lower pipe) :orange) 
   (draw-upper-pipe (asset/texture :pipe) (collision-rect-upper pipe) 30)
-  (draw-lower-pipe (asset/texture :pipe) (collision-rect-lower pipe) 30)
-)
+  (draw-lower-pipe (asset/texture :pipe) (collision-rect-lower pipe) 30))
 
 # ------ UI -------
 

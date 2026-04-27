@@ -17,10 +17,12 @@
 # -------- main --------
 (defn main [& args]
   (init-window)
+  (jaylib/init-audio-device)
   (asset/init-store)
   (defer
     (do
       (asset/deinit-store)
+      (jaylib/close-audio-device)
       (deinit-window))
     (let [game-session (session/make-session)]
       (put game-session :hiscore (storage/load-hiscore))

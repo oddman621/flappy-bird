@@ -1,10 +1,11 @@
 (import ./util)
 (import ./pipe :prefix "" :only [make-pipe collision-rect-upper collision-rect-lower])
-(import jaylib :only [check-collision-circle-rec key-pressed?])
-(import ./bird :prefix "" :only [bird-behaviors])
+(import jaylib :only [check-collision-circle-rec key-pressed? play-sound])
+(import ./bird :prefix "" :only [bird-behaviors shot-down-bird])
 (import ./storage)
 (import ./session)
 (import ./component)
+(import ./asset)
 
 (defn bird-collided? [session]
   (let [bird (session :bird)
@@ -52,8 +53,7 @@
             (pipe-process session (bird :velocity-x) delta-time)
             (update-score session)
             (when (bird-collided? session)
-              (put bird :velocity-y (max 0 (bird :velocity-y)))
-              (put bird :state :falling))))))))
+              (shot-down-bird bird))))))))
 
 (defn update-hiscore [session]
   (when (< (session :hiscore) (session :score))
@@ -63,11 +63,19 @@
   {:main
    (fn [session _ jump-pressed pause-pressed]
      (when (or jump-pressed pause-pressed)
+       (jaylib/play-sound (asset/sound :start))
        (put session :state :playing)))
    :playing
    (fn [session delta-time jump-pressed pause-pressed]
      (let [paused (get session :paused)]
-       (when pause-pressed (put session :paused (not paused)))
+       (when pause-pressed
+         (if paused
+           (do
+             (jaylib/play-sound (asset/sound :pause-out))
+             (set (session :paused) false))
+           (do
+             (jaylib/play-sound (asset/sound :pause-in))
+             (set (session :paused) true))))
        (when (not paused)
          (update-game-logic session delta-time jump-pressed))))
    :gameover

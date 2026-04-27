@@ -1,4 +1,6 @@
 # bird system utils
+(import ./asset)
+(import jaylib)
 
 (defn reset-bird [bird]
   (put bird :x 100)
@@ -9,7 +11,8 @@
 
 (defn jump-bird [bird]
   (let [impulse (get bird :jump-impulse)]
-    (put bird :velocity-y (- impulse))))
+    (put bird :velocity-y (- impulse))
+    (jaylib/play-sound (asset/sound :jump))))
 
 (defn drop-bird [bird gravity]
   (let [velocity-y (get bird :velocity-y)]
@@ -19,7 +22,10 @@
     (put bird :y (+ y velocity-y))))
 
 (defn fallen? [bird] (>= (get bird :y) 615))
-(defn shot-down-bird [bird] (put bird :state :falling)) 
+(defn shot-down-bird [bird] 
+  (put bird :velocity-y (max 0 (bird :velocity-y)))
+  (jaylib/play-sound (asset/sound :falling))
+  (put bird :state :falling)) 
 (defn kill-bird [bird] (put bird :state :dead))
 
 (def bird-behaviors

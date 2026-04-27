@@ -1,0 +1,3 @@
+{:type :sound
+ :name :pause-in
+ :file "asset/sfx_sounds_pause4_in.wav"}
