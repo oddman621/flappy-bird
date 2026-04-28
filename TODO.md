@@ -1,2 +1,4 @@
  - [x] add pipe graphics
- - [ ] add sound
+ - [x] add sound
+ - [x] add music
+ - [ ] add background

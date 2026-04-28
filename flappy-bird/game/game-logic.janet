@@ -1,6 +1,6 @@
 (import ./util)
 (import ./pipe :prefix "" :only [make-pipe collision-rect-upper collision-rect-lower])
-(import jaylib :only [check-collision-circle-rec key-pressed? play-sound])
+(import jaylib)
 (import ./bird :prefix "" :only [bird-behaviors shot-down-bird])
 (import ./storage)
 (import ./session)
@@ -64,6 +64,7 @@
    (fn [session _ jump-pressed pause-pressed]
      (when (or jump-pressed pause-pressed)
        (jaylib/play-sound (asset/sound :start))
+       (jaylib/play-music-stream (asset/music-stream :bgmusic))
        (put session :state :playing)))
    :playing
    (fn [session delta-time jump-pressed pause-pressed]
@@ -77,10 +78,12 @@
              (jaylib/play-sound (asset/sound :pause-in))
              (set (session :paused) true))))
        (when (not paused)
+         (jaylib/update-music-stream (asset/music-stream :bgmusic))
          (update-game-logic session delta-time jump-pressed))))
    :gameover
    (fn [session _ jump-pressed pause-pressed]
      (when (or jump-pressed pause-pressed)
+       (jaylib/stop-music-stream (asset/music-stream :bgmusic))
        (update-hiscore session)
        (storage/save-hiscore (session :hiscore))
        (session/reset-session session)))})

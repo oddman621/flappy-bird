@@ -5,13 +5,16 @@
 (defn metadata [jdnfile] (parse (slurp jdnfile)))
 
 (defn load-sound [metadata]
-  (let [asset (struct/to-table metadata)
-        content (jaylib/load-sound (asset :file))]
-    (put asset :content content)
-    asset))
+  (struct ;(kvs metadata) :content (jaylib/load-sound (metadata :file))))
+
 (defn unload-sound [asset]
-  (jaylib/unload-sound (asset :content))
-  (table/clear asset))
+  (jaylib/unload-sound (asset :content)))
+
+(defn load-music-stream [metadata]
+  (struct ;(kvs metadata) :content (jaylib/load-music-stream (metadata :file))))
+
+(defn unload-music-stream [asset]
+  (jaylib/unload-music-stream (asset :content)))
 
 (defn load-texture [imgfile &opt metafile]
   (def asset @{:texture (jaylib/load-texture imgfile)})
@@ -34,7 +37,8 @@
     :start (load-sound (metadata "asset/start.jdn"))
     :falling (load-sound (metadata "asset/falling.jdn"))
     :pause-in (load-sound (metadata "asset/pause_in.jdn"))
-    :pause-out (load-sound (metadata "asset/pause_out.jdn"))})
+    :pause-out (load-sound (metadata "asset/pause_out.jdn"))
+    :bgmusic (load-music-stream (metadata "asset/bgmusic.jdn"))})
 
 (defn unload-store [store]
   (unload-texture (store :fanzon))
@@ -44,6 +48,7 @@
   (unload-sound (store :falling))
   (unload-sound (store :pause-in))
   (unload-sound (store :pause-out))
+  (unload-music-stream (store :bgmusic))
   (table/clear store))
 
 
@@ -64,4 +69,7 @@
   (get-in store [name :texture]))
 
 (defn sound [name]
+  (get-in store [name :content]))
+
+(defn music-stream [name]
   (get-in store [name :content]))
