@@ -1,0 +1,5 @@
+{:type :image
+ :name :bgimage
+ :width 1024
+ :height 512
+ :file "asset/skycitystarsbig.png"}

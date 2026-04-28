@@ -38,7 +38,8 @@
     :falling (load-sound (metadata "asset/falling.jdn"))
     :pause-in (load-sound (metadata "asset/pause_in.jdn"))
     :pause-out (load-sound (metadata "asset/pause_out.jdn"))
-    :bgmusic (load-music-stream (metadata "asset/bgmusic.jdn"))})
+    :bgmusic (load-music-stream (metadata "asset/bgmusic.jdn"))
+    :bgimage (load-texture "asset/skycitystarsbig.png" "asset/bgimage.jdn")})
 
 (defn unload-store [store]
   (unload-texture (store :fanzon))
@@ -49,6 +50,7 @@
   (unload-sound (store :pause-in))
   (unload-sound (store :pause-out))
   (unload-music-stream (store :bgmusic))
+  (unload-texture (store :bgimage))
   (table/clear store))
 
 

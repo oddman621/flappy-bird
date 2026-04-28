@@ -8,6 +8,17 @@
 (defn draw-texture [texture source destination]
   (jaylib/draw-texture-pro texture source destination [0 0] 0 :white))
 
+# ------- Background --------
+
+(defn draw-bg [elapsed] 
+  (let [scr-width 400
+        scr-height 600
+        speed 20
+        x (* speed elapsed)
+        scale (/ 600 512)
+        tex (asset/texture :bgimage)]
+    (jaylib/draw-texture-ex tex [(- x) 0] 0 scale :white)))
+
 # ------ Game Objects ------
 
 (defn draw-bird [bird]
@@ -45,8 +56,6 @@
         (draw-texture tex body-src-rect dst-rect)))))
 
 (defn draw-pipe [pipe]
-  #(jaylib/draw-rectangle ;(collision-rect-upper pipe) :orange)
-  #(jaylib/draw-rectangle ;(collision-rect-lower pipe) :orange) 
   (draw-upper-pipe (asset/texture :pipe) (collision-rect-upper pipe) 30)
   (draw-lower-pipe (asset/texture :pipe) (collision-rect-lower pipe) 30))
 
@@ -69,15 +78,18 @@
 (def render-behaviors
   {:main
    (fn [session]
+     (draw-bg (session :elapsed))
      (draw-bird (get session :bird))
       (draw-main-ui))
    :playing
    (fn [session]
+     (draw-bg (session :elapsed))
      (each pipe (session :pipes) (draw-pipe pipe))
      (draw-bird (get session :bird))
       (draw-playing-ui session))
    :gameover
    (fn [session]
+     (draw-bg (session :elapsed))
      (each pipe (session :pipes) (draw-pipe pipe))
      (draw-bird (get session :bird))
       (draw-gameover-ui session))})

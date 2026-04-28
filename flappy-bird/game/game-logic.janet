@@ -40,14 +40,14 @@
       (resume (pipe :behavior) bird-vel))
     (put session :pipes (filter (fn [p] (p :active)) pipes))))
 
-(defn update-game-logic [session delta-time jump-pressed]
-  (+= (session :elapsed) delta-time)
+(defn update-game-logic [session delta-time jump-pressed] 
   (let [bird (session :bird)]
     (if (= (get bird :state) :dead)
       (put session :state :gameover)
       (do
         (util/execute-behavior bird bird-behaviors jump-pressed (session :gravity))
         (when (= (get bird :state) :alive)
+          (+= (session :elapsed) delta-time)
           (do 
             (component/animator/update (bird :animator) delta-time)
             (pipe-process session (bird :velocity-x) delta-time)
