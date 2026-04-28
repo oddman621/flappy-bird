@@ -7,7 +7,7 @@
 
 # -------- windowing + etc --------
 (defn init-window []
-  (jaylib/init-window 400 600 "Janet Flappy Bird")
+  (jaylib/init-window 400 600 "Janet Flappy Bird 0.1.0")
   (jaylib/set-target-fps 60)
   # (jaylib/set-exit-key 0)
   (jaylib/hide-cursor))
